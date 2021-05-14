@@ -33,7 +33,7 @@ const targetMap = new WeakMap()
  */
 // 给effect函数添加deps depsMap {key1: [], key2: [], key3: []}
 export function track(target, key) {
-  // shouldTrack 或者 activeEffect为undefined 直接返回
+  // 不在effect函数中，或者手动停止追踪直接返回
   if (!shouldTrack || activeEffect === undefined) {
     return
   }

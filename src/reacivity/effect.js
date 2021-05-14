@@ -1,3 +1,5 @@
+export const ITERATE_KEY = Symbol('')
+
 const effectStack = []
 let activeEffect
 
@@ -55,21 +57,37 @@ export function track(target, key) {
 }
 
 // 根据原始数据找到dep，循环执行effect函数
-export function trigger(target, key) {
+export function trigger(target, key, type) {
   const depsMap = targetMap.get(target)
   if (!depsMap) return
 
   // 获取要触发的函数
   const effects = new Set()
-  const effectsToAdd = depsMap.get(key)
-  if (effectsToAdd) {
-    effectsToAdd.forEach((effect) => {
-      effect !== activeEffect && effects.add(effect)
-    })
+
+  // 添加依赖
+  const add = (effectsToAdd) => {
+    if (effectsToAdd) {
+      effectsToAdd.forEach((effect) => {
+        effect !== activeEffect && effects.add(effect)
+      })
+    }
   }
 
-  // 循环触发
-  effects.forEach((effect) => effect())
+  switch (type) {
+    case 'delete':
+    case 'add':
+      // 如果是添加或者删除，触发ownkeys追踪
+      add(depsMap.get(ITERATE_KEY))
+      break
+    default:
+      break
+  }
+
+  // 添加key对应依赖
+  key !== void 0 && add(depsMap.get(key))
+
+  // 循环触发，computed触发options.scheduler
+  effects.forEach((effect) => (effect.options.scheduler ? effect.options.scheduler() : effect()))
 }
 
 export function isEffect(fn) {
@@ -82,7 +100,8 @@ export function effect(fn, options = {}) {
   const effect = function reactiveEffect() {
     // 加入一个副作用的开关
     if (!effect.active) {
-      return fn()
+      // computed 则触发 scheduler
+      return options.scheduler ? undefined : fn()
     }
     if (!effectStack.includes(effect)) {
       cleanup(effect)

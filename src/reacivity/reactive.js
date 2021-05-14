@@ -1,5 +1,5 @@
-import { isObject, hasOwn, hasChanged } from '../shared/index.js'
-import { track, trigger } from './effect.js'
+import { isObject, builtInSymbols, isSymbol, hasOwn, hasChanged } from '../shared/index.js'
+import { track, trigger, ITERATE_KEY } from './effect.js'
 
 // 保存所有的响应对象
 export const reactiveMap = new WeakMap()
@@ -28,6 +28,7 @@ export function reactive(target) {
 
   // 代理原对象
   const proxy = new Proxy(target, {
+    // 拦截get obj.a
     get(target, key, receiver) {
       // 添加一个 __v_isReactive 的属性，true
       if (key === ReactiveFlags.IS_REACTIVE) return true
@@ -41,6 +42,7 @@ export function reactive(target) {
       if (isObject(res)) return reactive(res)
       return res
     },
+    // 拦截set, obj.a = 1
     set(target, key, value, receiver) {
       let oldValue = target[key]
       oldValue = toRaw(oldValue)
@@ -48,20 +50,39 @@ export function reactive(target) {
       const hadKey = hasOwn(target, key)
       const result = Reflect.set(target, key, value, receiver)
       // don't trigger if target is something up in the prototype chain of original
-      if (target === toRaw(receiver) && (!hadKey || hasChanged(value, oldValue))) {
+      if (target === toRaw(receiver)) {
         // 根据target找到deps，触发effect
-        trigger(target, key)
+        if (!hadKey) {
+          // 如果有新增属性，追踪ownKeys
+          trigger(target, key, 'add')
+        } else if (hasChanged(value, oldValue)) {
+          trigger(target, key, 'set')
+        }
       }
       return result
     },
+    // 拦截删除, delete obj.a
     deleteProperty(target, key) {
       const hadKey = hasOwn(target, key)
       const result = Reflect.deleteProperty(target, key)
       if (result && hadKey) {
         // 根据target找到deps，触发effect
-        trigger(target, key)
+        trigger(target, key, 'delete')
       }
       return result
+    },
+    // 拦截has, a in obj
+    has(target, key) {
+      const result = Reflect.has(target, key)
+      if (!isSymbol(key) || !builtInSymbols.has(key)) {
+        track(target, key, 'has')
+      }
+      return result
+    },
+    // 拦截 Object.keys
+    ownKeys(target) {
+      track(target, ITERATE_KEY)
+      return Reflect.ownKeys(target)
     },
   })
 

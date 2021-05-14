@@ -81,7 +81,9 @@ export function effect(fn, options = {}) {
   isEffect(fn) && (fn = fn.raw)
   const effect = function reactiveEffect() {
     // 加入一个副作用的开关
-    if (!effect.active) fn()
+    if (!effect.active) {
+      return fn()
+    }
     if (!effectStack.includes(effect)) {
       cleanup(effect)
       try {

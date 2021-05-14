@@ -56,11 +56,10 @@ export function reactive(target) {
     },
     deleteProperty(target, key) {
       const hadKey = hasOwn(target, key)
-      const oldValue = target[key]
       const result = Reflect.deleteProperty(target, key)
       if (result && hadKey) {
         // 根据target找到deps，触发effect
-        trigger(target, key, undefined, oldValue)
+        trigger(target, key)
       }
       return result
     },

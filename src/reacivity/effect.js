@@ -31,7 +31,7 @@ const targetMap = new WeakMap()
  * @param {*} target 原始对象
  * @param {*} key 追踪key
  */
-// 给effect函数添加deps depsMap {key1: [], key2: [], key3: []}
+// 保存key对应的更新函数，并把key对应的所有的更新函数，给当前更新函数作为一个属性
 export function track(target, key) {
   // 不在effect函数中，或者手动停止追踪直接返回
   if (!shouldTrack || activeEffect === undefined) {
@@ -86,7 +86,7 @@ export function trigger(target, key, type) {
   // 添加key对应依赖
   key !== void 0 && add(depsMap.get(key))
 
-  // 循环触发，computed触发options.scheduler
+  // 循环触发key对应的更新函数，computed触发options.scheduler追踪value
   effects.forEach((effect) => (effect.options.scheduler ? effect.options.scheduler() : effect()))
 }
 
@@ -103,6 +103,7 @@ export function effect(fn, options = {}) {
       // computed 则触发 scheduler
       return options.scheduler ? undefined : fn()
     }
+    // 防止effect嵌套使用队列维护，清空所有依赖此更新函数，重新收集依赖加入新的更新函数
     if (!effectStack.includes(effect)) {
       cleanup(effect)
       try {

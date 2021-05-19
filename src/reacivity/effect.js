@@ -87,7 +87,7 @@ export function trigger(target, key, type) {
   key !== void 0 && add(depsMap.get(key))
 
   // 循环触发key对应的更新函数，computed触发options.scheduler追踪value
-  effects.forEach((effect) => (effect.options.scheduler ? effect.options.scheduler() : effect()))
+  effects.forEach((effect) => (effect.options.scheduler ? effect.options.scheduler(effect) : effect()))
 }
 
 export function isEffect(fn) {

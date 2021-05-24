@@ -3,6 +3,7 @@ import { watch } from '../../src/runtime-core/index.js'
 
 const state = reactive({})
 
+// 支持reactive
 watch(state, () => {
   console.log('proxy', state)
 })
@@ -15,6 +16,7 @@ state.b = 3
 
 const state2 = reactive({})
 
+// 支持函数
 watch(
   () => state2,
   () => {
@@ -22,8 +24,8 @@ watch(
   }
 )
 
-state.a = 1
+state2.a = 1
 
-state.b = 2
+state2.b = 2
 
-state.c = 3
+state2.c = 3

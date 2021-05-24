@@ -72,7 +72,7 @@ export function trigger(target, key, type) {
   // 添加key对应依赖
   key !== void 0 && add(depsMap.get(key))
 
-  // 循环触发key对应的更新函数，computed触发options.scheduler追踪value
+  // 循环触发key对应的更新函数，computed/watch触发options.scheduler追踪value
   effects.forEach((effect) => (effect.options.scheduler ? effect.options.scheduler(effect) : effect()))
 }
 

@@ -16,7 +16,6 @@ export function watch(source, cb) {
     getter = () => source
   }
 
-  console.log(getter)
   const baseGetter = getter
   getter = () => traverse(baseGetter())
 

@@ -8,20 +8,6 @@ const trackStack = [] // Boolean[]
 
 let uid = 0
 
-// interface ReactiveEffect<T = any> {
-//   (): T
-//   _isEffect: true
-//   id: number
-//   active: boolean
-//   raw: () => T
-//   deps: Array<Dep>
-//   options: ReactiveEffectOptions
-// }
-
-// export interface ReactiveEffectOptions {
-//   lazy?: boolean
-// }
-
 // 原始对象和依赖 对应关系
 const targetMap = new WeakMap()
 
@@ -135,6 +121,16 @@ export function effect(fn, options = {}) {
   return effect
 }
 
+export function stop(effect) {
+  if (effect.active) {
+    cleanup(effect)
+    if (effect.options.onStop) {
+      effect.options.onStop()
+    }
+    effect.active = false
+  }
+}
+
 // 新增变量shouldTrack true，并保存旧shouldTrack变量到trackStack
 function enableTracking() {
   trackStack.push(shouldTrack)
@@ -156,3 +152,17 @@ function cleanup(effect) {
     deps.length = 0
   }
 }
+
+// interface ReactiveEffect<T = any> {
+//   (): T
+//   _isEffect: true
+//   id: number
+//   active: boolean
+//   raw: () => T
+//   deps: Array<Dep>
+//   options: ReactiveEffectOptions
+// }
+
+// export interface ReactiveEffectOptions {
+//   lazy?: boolean
+// }

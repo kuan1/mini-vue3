@@ -1,40 +1,64 @@
-import { effect } from '../reacivity/index.js'
-import { hasChanged, isObject } from '../shared/index.js'
+import { effect, stop } from '../reacivity/index.js'
+
+import { isObject, isFunction } from '../shared/index.js'
 
 const INITIAL_WATCHER_VALUE = {}
 
+// 这里仅仅实现 reactive对象类型 watch
 export function watch(source, cb) {
-  let getter = () => source
+  let getter
+
+  if (isFunction(source)) {
+    // 这里错误处理逻辑
+    getter = source
+  } else {
+    // 这里不作处理，默认这里是reactive
+    getter = () => source
+  }
+
+  console.log(getter)
   const baseGetter = getter
   getter = () => traverse(baseGetter())
+
+  let cleanup
+  let onInvalidate = (fn) => {
+    cleanup = runner.options.onStop = () => {
+      fn()
+    }
+  }
+
   let oldValue = INITIAL_WATCHER_VALUE
   const job = () => {
-    // effect开关
     if (!runner.active) return
     const newValue = runner()
-    if (hasChanged(newValue, oldValue)) {
-      cb && cb(newValue, INITIAL_WATCHER_VALUE ? undefined : oldValue)
-    }
+    cleanup && cleanup()
+    cb(newValue, oldValue, onInvalidate)
     oldValue = newValue
   }
 
-  const runner = effect(getter, { lazy: true, scheduler: () => Promise.resolve().then(job) })
+  job.allowRecurse = true
+
+  // sync
+  const scheduler = job
+
+  const runner = effect(getter, {
+    lazy: true,
+    scheduler,
+  })
 
   oldValue = runner()
 
   return () => {
-    if (runner.active) {
-      runner.active = false
-    }
+    stop(runner)
   }
 }
 
 function traverse(value, seen = new Set()) {
-  if (!isObject() || seen.has(value)) {
+  if (!isObject(value) || seen.has(value)) {
     return value
   }
-  seen.add(value)
   for (const key in value) {
+    // 主动触发
     traverse(value[key], seen)
   }
   return value

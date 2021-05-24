@@ -11,7 +11,7 @@ src
 | |____index.js # isObject isArray isFunction hasChanged
 |____runtime-core
 | |____index.js
-| |____scheduler.js # nextTick
+| |____scheduler.js # nextTick 进行中[todo ....]
 | |____apiWatch.js # 65 行代码实现 watch 函数，仅支持函数和 reactive
 |____reacivity
 | |____reactive.js # 90行代码仅实现普通对象追踪

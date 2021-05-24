@@ -7,10 +7,12 @@
 #### 1. reactivity
 
 - `src/reacivity/reactive.js` 90 行代码仅实现普通对象追踪
-- `src/reacivity/effect` 150 行代码副作用函数，追踪和触发逻辑
-- `src/reacivity/watch` 35 行代码仅支持 Function watch
+- `src/reacivity/effect.js` 150 行代码副作用函数，追踪和触发逻辑
+- `src/reacivity/watch.js` 35 行代码仅支持 Function watch
 
 ### 2. runtime-core
+
+- `src/runtime-core/apiWatch.js` 65 行代码实现 watch 函数，仅支持函数和 reactive
 
 ### 阅读进度
 

@@ -2,17 +2,24 @@
 
 阅读[vue3](https://github.com/vuejs/vue-next)代码。没有搭建任何环境，直接使用 module script 简陋实现阅读的功能。
 
-## 实现功能(仅实现部分基础功能，更方便阅读 vue3 原理)
+## 项目目录介绍(仅实现部分基础功能，更方便阅读 vue3 原理)
 
-### 1. reactivity
-
-- `src/reacivity/reactive.js` 90 行代码仅实现普通对象追踪
-- `src/reacivity/effect.js` 150 行代码副作用函数，追踪和触发逻辑
-- `src/reacivity/watch.js` 35 行代码仅支持 Function watch
-
-### 2. runtime-core
-
-- `src/runtime-core/apiWatch.js` 65 行代码实现 watch 函数，仅支持函数和 reactive
+```shell
+src
+|____index.js
+|____shared
+| |____index.js
+|____runtime-core
+| |____index.js
+| |____scheduler.js # nextTick
+| |____apiWatch.js # 65 行代码实现 watch 函数，仅支持函数和 reactive
+|____reacivity
+| |____reactive.js # 90行代码仅实现普通对象追踪
+| |____index.js
+| |____computed.js # 35行代码仅支持 function reactive
+| |____effect.js # 150行代码副作用函数，追踪和触发逻辑
+| |____ref.js # 35行代码实现简单的 ref
+```
 
 ### 阅读进度
 

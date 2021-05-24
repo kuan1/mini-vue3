@@ -8,7 +8,7 @@
 src
 |____index.js
 |____shared
-| |____index.js
+| |____index.js # isObject isArray isFunction hasChanged
 |____runtime-core
 | |____index.js
 | |____scheduler.js # nextTick

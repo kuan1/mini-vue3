@@ -4,7 +4,7 @@
 
 ## 实现功能(仅实现部分基础功能，更方便阅读 vue3 原理)
 
-#### 1. reactivity
+### 1. reactivity
 
 - `src/reacivity/reactive.js` 90 行代码仅实现普通对象追踪
 - `src/reacivity/effect.js` 150 行代码副作用函数，追踪和触发逻辑

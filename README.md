@@ -23,5 +23,5 @@ src
 
 ### 阅读进度
 
-- [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)
-- [@vue/runtime-core](https://github.com/vuejs/vue-next/tree/master/packages/runtime-core) 阅读中
+- [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity) 阅读完毕。
+- [@vue/runtime-core](https://github.com/vuejs/vue-next/tree/master/packages/runtime-core) 阅读中...

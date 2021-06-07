@@ -86,8 +86,7 @@ export function effect(fn, options = {}) {
   const effect = function reactiveEffect() {
     // 加入一个副作用的开关
     if (!effect.active) {
-      // computed 则触发 scheduler
-      return options.scheduler ? undefined : fn()
+      return fn()
     }
     // 防止effect嵌套使用队列维护，清空所有依赖此更新函数，重新收集依赖加入新的更新函数
     if (!effectStack.includes(effect)) {

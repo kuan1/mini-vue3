@@ -2,6 +2,7 @@ import { reactive } from '../reacivity/index.js'
 import { createContext } from './context.js'
 import { toDisplayString } from './directives/text.js'
 import { nextTicket } from './scheduler.js'
+import { Block } from './block.js'
 
 export const createApp = (initialData) => {
   const ctx = createContext()

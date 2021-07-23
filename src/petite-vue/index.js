@@ -1,3 +1,4 @@
 import { createApp } from './app.js'
 
-createApp().mount()
+const app = document.querySelector('#app')
+createApp().mount(app)

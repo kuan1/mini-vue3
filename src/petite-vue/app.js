@@ -21,6 +21,7 @@ export const createApp = (initialData) => {
   return {
     mount(el) {
       rootBlocks = [new Block(el, ctx, true)]
+      console.log(rootBlocks[0])
       return this
     },
     unmount() {
